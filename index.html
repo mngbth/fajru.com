@@ -38,19 +38,37 @@ background:#333;
 const owner = "mngbth";
 const repo  = "fajru.com";
 
-const url = `https://api.github.com/repos/$mngbth/$fajru.com/contents/`;
+/* ✅ FIXED URL */
+const url = `https://api.github.com/repos/${owner}/${repo}/contents/`;
 
 async function load(){
+
+const list = document.getElementById("list");
+
+try{
 
 const res = await fetch(url);
 const data = await res.json();
 
-const list = document.getElementById("list");
+/* handle API errors clearly */
+if(!res.ok){
+list.innerHTML =
+"❌ Error: " + data.message +
+"<br><small>Repo may be private or name incorrect</small>";
+return;
+}
+
 list.innerHTML = "";
 
-data.forEach(item=>{
+/* filter folders only */
+const folders = data.filter(item => item.type === "dir");
 
-if(item.type === "dir"){
+if(folders.length === 0){
+list.innerHTML = "No folders found in root.";
+return;
+}
+
+folders.forEach(item=>{
 
 const a = document.createElement("a");
 a.href = item.html_url;
@@ -59,9 +77,11 @@ a.textContent = "📁 " + item.name;
 
 list.appendChild(a);
 
-}
-
 });
+
+}catch(err){
+list.innerHTML = "❌ Failed: " + err.message;
+}
 
 }
 
