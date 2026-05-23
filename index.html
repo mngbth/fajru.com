@@ -31,16 +31,6 @@ margin:0;
 font-size:24px;
 }
 
-.search{
-margin-top:15px;
-padding:10px;
-width:80%;
-max-width:400px;
-border-radius:8px;
-border:none;
-outline:none;
-}
-
 /* GRID */
 .container{
 max-width:1000px;
@@ -61,7 +51,7 @@ border-radius:14px;
 padding:15px;
 text-align:center;
 cursor:pointer;
-transition:0.3s;
+transition:0.25s;
 box-shadow:0 5px 20px rgba(0,0,0,0.4);
 position:relative;
 overflow:hidden;
@@ -106,8 +96,6 @@ opacity:1;
 <div class="header">
     <img src="logo.png">
     <h1>Fajru Online Library</h1>
-
-    <input class="search" id="search" placeholder="Search books...">
 </div>
 
 <div class="container">
@@ -116,10 +104,7 @@ opacity:1;
 
 <script>
 
-/* =========================
-   BOOK DATABASE
-========================= */
-
+/* BOOK LIST */
 const base = "https://fajru.com";
 
 const books = [
@@ -140,18 +125,10 @@ cover:"book.png"
 }
 ];
 
+/* RENDER */
 const list = document.getElementById("list");
-const search = document.getElementById("search");
 
-/* =========================
-   RENDER FUNCTION
-========================= */
-
-function render(data){
-
-list.innerHTML = "";
-
-data.forEach(b=>{
+books.forEach(b=>{
 
 const a = document.createElement("a");
 a.href = `${base}/${b.folder}/index.html`;
@@ -165,27 +142,6 @@ a.innerHTML = `
 `;
 
 list.appendChild(a);
-
-});
-
-}
-
-/* initial load */
-render(books);
-
-/* =========================
-   SEARCH FILTER
-========================= */
-
-search.addEventListener("input",()=>{
-
-const q = search.value.toLowerCase();
-
-const filtered = books.filter(b =>
-b.name.toLowerCase().includes(q)
-);
-
-render(filtered);
 
 });
 
