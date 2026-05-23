@@ -1,269 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Fehi Reyru</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<meta charset="utf-8">
+<title>GitHub Folder Viewer</title>
 
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    background:#1d140c;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-    font-family:Segoe UI;
+font-family:Segoe UI;
+background:#111;
+color:white;
+padding:20px;
 }
 
-/* VIEWPORT */
-
-#frame{
-    width:700px;
-    height:900px;
-    position:relative;
-    overflow:hidden;
-    background:white;
-    box-shadow:0 0 40px rgba(0,0,0,0.5);
+a{
+display:block;
+padding:10px;
+margin:5px 0;
+background:#222;
+color:#9fe6a0;
+text-decoration:none;
+border-radius:6px;
 }
 
-/* BASE CANVAS */
-
-canvas{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+a:hover{
+background:#333;
 }
-
-/* CURRENT PAGE (FRONT) */
-
-#front{
-    z-index:2;
-    transition:transform 0.6s ease, opacity 0.6s ease;
-    transform-origin:center;
-}
-
-/* BACK PAGE */
-
-#back{
-    z-index:1;
-}
-
-/* STACK ANIMATION STATES */
-
-.go-next{
-    transform:translateX(-100%) scale(0.92);
-    opacity:0.6;
-}
-
-.go-prev{
-    transform:translateX(100%) scale(0.92);
-    opacity:0.6;
-}
-
-/* CLICK ZONES */
-
-.zone{
-    position:absolute;
-    top:0;
-    width:50%;
-    height:100%;
-    z-index:10;
-}
-
-.left{ left:0; }
-.right{ right:0; }
-
-/* HINT */
-
-.help{
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    color:#ddd;
-    font-size:14px;
-}
-
 </style>
 </head>
 
 <body>
 
-<div id="frame">
-
-    <canvas id="front"></canvas>
-    <canvas id="back"></canvas>
-
-    <div class="zone left"></div>
-    <div class="zone right"></div>
-
-</div>
-
-<div class="help">
-    Left = NEXT (go under) | Right = PREVIOUS
-</div>
+<h2>Repository Folders</h2>
+<div id="list">Loading...</div>
 
 <script>
 
-const pdfUrl = "book.pdf";
+const owner = "YOUR_USERNAME";
+const repo  = "YOUR_REPO";
 
-let pdfDoc = null;
-let pageIndex = 1;
+const url = `https://api.github.com/repos/${owner}/${repo}/contents/`;
 
-const front = document.getElementById("front");
-const back = document.getElementById("back");
+async function load(){
 
-const fctx = front.getContext("2d");
-const bctx = back.getContext("2d");
+const res = await fetch(url);
+const data = await res.json();
 
-async function render(pageNum, canvas, ctx){
+const list = document.getElementById("list");
+list.innerHTML = "";
 
-    const page = await pdfDoc.getPage(pageNum);
+data.forEach(item=>{
 
-    const viewport = page.getViewport({ scale: 2 });
+if(item.type === "dir"){
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+const a = document.createElement("a");
+a.href = item.html_url;
+a.target = "_blank";
+a.textContent = "📁 " + item.name;
 
-    await page.render({
-        canvasContext: ctx,
-        viewport: viewport
-    }).promise;
-
-}
-
-/* INIT */
-
-async function loadPDF(){
-
-    pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
-
-    render(pageIndex, front, fctx);
+list.appendChild(a);
 
 }
 
-function animateNext(callback){
+});
 
-    front.classList.add("go-next");
-
-    setTimeout(()=>{
-
-        front.classList.remove("go-next");
-
-        callback();
-
-    },600);
 }
 
-function animatePrev(callback){
-
-    front.classList.add("go-prev");
-
-    setTimeout(()=>{
-
-        front.classList.remove("go-prev");
-
-        callback();
-
-    },600);
-}
-
-/* NEXT (LEFT SIDE) */
-
-document.querySelector(".left").addEventListener("click",async ()=>{
-
-    if(pageIndex < pdfDoc.numPages){
-
-        await render(pageIndex + 1, back, bctx);
-
-        animateNext(()=>{
-
-            pageIndex++;
-            render(pageIndex, front, fctx);
-
-        });
-
-    }
-
-});
-
-/* PREVIOUS (RIGHT SIDE) */
-
-document.querySelector(".right").addEventListener("click",async ()=>{
-
-    if(pageIndex > 1){
-
-        await render(pageIndex - 1, back, bctx);
-
-        animatePrev(()=>{
-
-            pageIndex--;
-            render(pageIndex, front, fctx);
-
-        });
-
-    }
-
-});
-
-/* TOUCH */
-
-let startX = 0;
-
-document.addEventListener("touchstart",(e)=>{
-    startX = e.touches[0].clientX;
-});
-
-document.addEventListener("touchend",async ()=>{
-
-    if(startX < window.innerWidth / 2){
-
-        if(pageIndex < pdfDoc.numPages){
-
-            await render(pageIndex + 1, back, bctx);
-
-            animateNext(()=>{
-
-                pageIndex++;
-                render(pageIndex, front, fctx);
-
-            });
-
-        }
-
-    }else{
-
-        if(pageIndex > 1){
-
-            await render(pageIndex - 1, back, bctx);
-
-            animatePrev(()=>{
-
-                pageIndex--;
-                render(pageIndex, front, fctx);
-
-            });
-
-        }
-
-    }
-
-});
-
-loadPDF();
+load();
 
 </script>
 
