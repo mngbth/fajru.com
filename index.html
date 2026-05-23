@@ -22,70 +22,38 @@ text-decoration:none;
 border-radius:6px;
 }
 
-a:hover{
-background:#333;
-}
+a:hover{background:#333}
 </style>
 </head>
 
 <body>
 
 <h2>Books</h2>
-<div id="list">Loading...</div>
+<div id="list"></div>
 
 <script>
 
-const owner = "mngbth";
-const repo  = "fajru.com";
+const base = "https://mngbth.github.io/fajru.com";
 
-/* ✅ FIXED URL */
-const url = `https://api.github.com/repos/${owner}/${repo}/contents/`;
-
-async function load(){
+const folders = [
+"book1",
+"book2",
+"book3"
+];
 
 const list = document.getElementById("list");
 
-try{
-
-const res = await fetch(url);
-const data = await res.json();
-
-/* handle API errors clearly */
-if(!res.ok){
-list.innerHTML =
-"❌ Error: " + data.message +
-"<br><small>Repo may be private or name incorrect</small>";
-return;
-}
-
-list.innerHTML = "";
-
-/* filter folders only */
-const folders = data.filter(item => item.type === "dir");
-
-if(folders.length === 0){
-list.innerHTML = "No folders found in root.";
-return;
-}
-
-folders.forEach(item=>{
+folders.forEach(f => {
 
 const a = document.createElement("a");
-a.href = item.html_url;
-a.target = "_blank";
-a.textContent = "📁 " + item.name;
+
+/* THIS OPENS index.html INSIDE FOLDER */
+a.href = `${base}/${f}/index.html`;
+a.textContent = "📁 " + f;
 
 list.appendChild(a);
 
 });
-
-}catch(err){
-list.innerHTML = "❌ Failed: " + err.message;
-}
-
-}
-
-load();
 
 </script>
 
