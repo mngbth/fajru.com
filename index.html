@@ -2,55 +2,190 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Fajru Publisher</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fajru Library</title>
 
 <style>
+
 body{
+margin:0;
 font-family:Segoe UI;
-background:#111;
+background:linear-gradient(135deg,#0d0d0d,#1a1a1a);
 color:white;
+}
+
+/* HEADER */
+.header{
+text-align:center;
+padding:25px 10px;
+}
+
+.header img{
+width:80px;
+margin-bottom:10px;
+filter:drop-shadow(0 0 10px rgba(0,0,0,0.6));
+}
+
+.header h1{
+margin:0;
+font-size:24px;
+}
+
+.search{
+margin-top:15px;
+padding:10px;
+width:80%;
+max-width:400px;
+border-radius:8px;
+border:none;
+outline:none;
+}
+
+/* GRID */
+.container{
+max-width:1000px;
+margin:auto;
 padding:20px;
 }
 
-a{
-display:block;
-padding:10px;
-margin:5px 0;
-background:#222;
-color:#9fe6a0;
-text-decoration:none;
-border-radius:6px;
+#list{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
 }
 
-a:hover{background:#333}
+/* BOOK CARD */
+.book{
+background:#1e1e1e;
+border-radius:14px;
+padding:15px;
+text-align:center;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 5px 20px rgba(0,0,0,0.4);
+position:relative;
+overflow:hidden;
+}
+
+.book:hover{
+transform:translateY(-6px) scale(1.04);
+background:#252525;
+}
+
+.book img{
+width:60px;
+margin-bottom:10px;
+}
+
+.book span{
+display:block;
+font-size:14px;
+color:#9fe6a0;
+word-break:break-word;
+}
+
+/* glow */
+.book::after{
+content:"";
+position:absolute;
+inset:0;
+background:radial-gradient(circle at top,rgba(158,230,160,0.15),transparent);
+opacity:0;
+transition:0.3s;
+}
+
+.book:hover::after{
+opacity:1;
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>Books</h2>
-<div id="list"></div>
+<div class="header">
+    <img src="logo.png">
+    <h1>Fajru Online Library</h1>
+
+    <input class="search" id="search" placeholder="Search books...">
+</div>
+
+<div class="container">
+    <div id="list"></div>
+</div>
 
 <script>
 
+/* =========================
+   BOOK DATABASE
+========================= */
+
 const base = "https://fajru.com";
 
-const folders = [
-"Fehi Reyru",
-
+const books = [
+{
+name:"Fehi Reyru",
+folder:"Fehi Reyru",
+cover:"book.png"
+},
+{
+name:"Sample Book 2",
+folder:"Sample2",
+cover:"book.png"
+},
+{
+name:"Sample Book 3",
+folder:"Sample3",
+cover:"book.png"
+}
 ];
 
 const list = document.getElementById("list");
+const search = document.getElementById("search");
 
-folders.forEach(f => {
+/* =========================
+   RENDER FUNCTION
+========================= */
+
+function render(data){
+
+list.innerHTML = "";
+
+data.forEach(b=>{
 
 const a = document.createElement("a");
+a.href = `${base}/${b.folder}/index.html`;
+a.style.textDecoration="none";
 
-/* THIS OPENS index.html INSIDE FOLDER */
-a.href = `${base}/${f}/index.html`;
-a.textContent = "📁 " + f;
+a.innerHTML = `
+<div class="book">
+    <img src="${b.cover}">
+    <span>${b.name}</span>
+</div>
+`;
 
 list.appendChild(a);
+
+});
+
+}
+
+/* initial load */
+render(books);
+
+/* =========================
+   SEARCH FILTER
+========================= */
+
+search.addEventListener("input",()=>{
+
+const q = search.value.toLowerCase();
+
+const filtered = books.filter(b =>
+b.name.toLowerCase().includes(q)
+);
+
+render(filtered);
 
 });
 
