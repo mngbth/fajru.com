@@ -1,1 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Light PDF Flip</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<style>
+html,body{
+margin:0;
+height:100%;
+overflow-y:auto;
+background:#111;
+}
+
+#wrap{
+width:100vw;
+display:flex;
+justify-content:center;
+perspective:1500px;
+}
+
+canvas{
+width:100vw;
+height:auto;
+position:absolute;
+background:#fff;
+box-shadow:0 0 30px rgba(0,0,0,.4);
+}
+
+#b{z-index:1}
+#f{z-index:2}
+</style>
+</head>
+
+<body>
+
+<div id="wrap">
+<canvas id="b"></canvas>
+<canvas id="f"></canvas>
+</div>
+
+<script>
+
+const url="book.pdf";
+let pdf,p=1,anim=0;
+
+const f=document.getElementById("f");
+const b=document.getElementById("b");
+
+const fc=f.getContext("2d");
+const bc=b.getContext("2d");
+
+async function render(n,canvas,ctx){
+const pg=await pdf.getPage(n);
+const v=pg.getViewport({scale:1});
+const s=innerWidth/v.width;
+const vp=pg.getViewport({scale:s*devicePixelRatio});
+
+canvas.width=vp.width;
+canvas.height=vp.height;
+canvas.style.width="100vw";
+
+await pg.render({canvasContext:ctx,viewport:vp}).promise;
+}
+
+pdfjsLib.getDocument(url).promise.then(d=>{
+pdf=d;
+render(p,f,fc);
+});
+
+function flip(dir,x){
+if(anim)return;anim=1;
+
+let n=dir?p+1:p-1;
+if(n<1||n>pdf.numPages){anim=0;return;}
+
+render(n,b,bc).then(()=>{
+
+let start=null;
+let dur=2600;
+
+function draw(t){
+
+if(!start)start=t;
+
+let t1=(t-start)/dur;
+if(t1>1)t1=1;
+
+/* linear feel = less CPU */
+let e=t1;
+
+let w=f.width;
+let h=f.height;
+
+fc.clearRect(0,0,w,h);
+
+/* always show next page */
+fc.drawImage(b,0,0,w,h);
+
+let side = x<innerWidth/2 ? -1 : 1;
+
+let curl = w * e * 0.55;
+let flat = w - curl;
+let slide = side * w * e;
+
+/* flat part */
+fc.drawImage(f,0,0,flat,h,slide,0,flat,h);
+
+/* ===== LIGHTWEIGHT CURL ===== */
+/* reduced from 80 → 24 segments */
+let segments = 24;
+
+for(let i=0;i<segments;i++){
+
+let u = i/segments;
+
+let sx = flat + u*curl;
+let sw = curl/segments;
+
+/* simplified cylinder */
+let bend = Math.sin(u * Math.PI);
+
+/* shallow depth (cheap) */
+let z = bend * 25 * e;
+
+/* small curl offset */
+let off = bend * 18 * e;
+
+/* single draw per segment (no save/restore) */
+fc.drawImage(
+f,
+sx,0,sw,h,
+slide + sx + off, z,
+sw,h
+);
+
+}
+
+/* subtle shadow (cheap) */
+fc.fillStyle="rgba(0,0,0,"+(0.25*e)+")";
+fc.fillRect(slide,0,w,h);
+
+if(t1<1){
+requestAnimationFrame(draw);
+}else{
+p=n;
+render(p,f,fc);
+anim=0;
+}
+
+}
+
+requestAnimationFrame(draw);
+
+});
+
+}
+
+document.addEventListener("click",e=>{
+flip(e.clientX<innerWidth/2?1:0,e.clientX);
+});
+
+</script>
+
+</body>
+</html>
