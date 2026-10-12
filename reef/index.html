@@ -1,0 +1,1030 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>REEF SHINE THODDOO — Maldives Guest House</title>
+
+<style>
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  color:#202624;
+  background:#fff;
+  font:16px/1.6 Arial,Helvetica,sans-serif
+}
+
+img{
+  display:block;
+  max-width:100%;
+  border-radius:14px
+}
+
+/* HERO SECTION */
+.hero{
+  min-height:clamp(540px,76vh,790px);
+  display:flex;
+  align-items:center;
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  padding:90px 24px;
+  background:#263b32 url('1.jpg') center 48%/cover no-repeat;
+  text-align:center;
+  border-radius:0
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(
+    180deg,
+    rgba(7,20,17,.48) 0%,
+    rgba(7,20,17,.22) 38%,
+    rgba(7,20,17,.58) 100%
+  )
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border:1px solid rgba(255,255,255,.42);
+  pointer-events:none;
+  z-index:-1
+}
+
+.hero-inner{
+  width:min(1000px,100%);
+  margin:auto
+}
+
+.hero-copy{
+  max-width:900px;
+  margin:0 auto
+}
+
+.hero-kicker{
+  margin:0 0 24px;
+  color:#fff;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  text-shadow:0 2px 5px #000,0 0 14px #000,1px 1px 0 #000,-1px -1px 0 #000
+}
+
+h1{
+  max-width:900px;
+  margin:0 auto 24px;
+  color:#fff;
+  font-size:clamp(2.6rem,7vw,6.2rem);
+  line-height:1.04;
+  font-weight:600;
+  letter-spacing:-.045em;
+  text-wrap:balance;
+  -webkit-text-stroke:.45px rgba(20,35,29,.9);
+  text-shadow:0 3px 5px rgba(0,0,0,.95),0 7px 24px rgba(0,0,0,.9),1px 1px 0 #17221d,-1px -1px 0 #17221d,1px -1px 0 #17221d,-1px 1px 0 #17221d
+}
+
+.hero-subtitle{
+  max-width:680px;
+  margin:0 auto;
+  color:#fff;
+  font-size:clamp(1rem,2vw,1.25rem);
+  text-shadow:0 2px 4px #000,0 4px 16px #000,1px 1px 0 #17221d,-1px -1px 0 #17221d;
+  line-height:1.8
+}
+
+/* BOOKING SECTION */
+.booking-section{
+  position:relative;
+  padding:0 24px 70px;
+  background:linear-gradient(180deg,#f5f8f6 0%,#fff 100%)
+}
+
+.booking{
+  position:relative;
+  max-width:1080px;
+  margin:-54px auto 0;
+  background:#fff;
+  padding:clamp(24px,4vw,48px);
+  border:1px solid rgba(30,57,45,.08);
+  border-radius:16px;
+  box-shadow:0 24px 70px rgba(18,42,31,.16);
+  z-index:2
+}
+
+.booking h2{
+  margin:0 0 30px;
+  font-size:1.45rem;
+  font-weight:500
+}
+
+.fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:24px
+}
+
+.field{
+  display:block;
+  min-width:0
+}
+
+.field span{
+  display:block;
+  margin-bottom:9px;
+  color:#59615e;
+  font-size:.9rem
+}
+
+input,select{
+  width:100%;
+  min-height:58px;
+  padding:14px 15px;
+  border:1px solid #d8ddda;
+  border-radius:8px;
+  background:#fff;
+  color:#202624;
+  font:inherit
+}
+
+input:focus,select:focus{
+  outline:2px solid #9aafa5;
+  outline-offset:2px
+}
+
+.wide{grid-column:1/-1}
+
+.guests{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px
+}
+
+button{
+  font:inherit;
+  cursor:pointer
+}
+
+.booking button{
+  min-height:60px;
+  padding:16px 24px;
+  border:0;
+  border-radius:9px;
+  background:#263b32;
+  color:#fff;
+  letter-spacing:.04em;
+  transition:background .2s ease,transform .2s ease
+}
+
+.booking button:hover{
+  background:#354d42
+}
+
+.note{
+  margin:18px 0 0;
+  color:#626c67;
+  font-size:.88rem
+}
+
+/* MAIN CONTENT */
+.content{
+  width:min(900px,calc(100% - 48px));
+  margin:0 auto;
+  padding:80px 0 80px
+}
+
+.content h2{
+  margin:0 0 24px;
+  font-size:clamp(1.7rem,3vw,2.4rem);
+  font-weight:500;
+  letter-spacing:-.025em
+}
+
+.content h3{
+  margin:0 0 12px;
+  font-size:1.2rem;
+  font-weight:600
+}
+
+.content p{
+  margin:0 0 28px;
+  color:#535c57;
+  line-height:1.9
+}
+
+/* LARGE CONTENT PHOTOS */
+.photo{
+  width:100%;
+  height:clamp(260px,45vw,520px);
+  margin:38px 0 62px;
+  object-fit:cover;
+  border-radius:20px;
+  box-shadow:0 14px 34px rgba(27,49,39,.16),0 3px 8px rgba(27,49,39,.08);
+  border:1px solid rgba(255,255,255,.8);
+  transition:transform .25s ease,box-shadow .25s ease
+}
+
+.photo:hover{
+  transform:translateY(-2px);
+  box-shadow:0 18px 40px rgba(27,49,39,.2),0 4px 10px rgba(27,49,39,.09)
+}
+
+/* ROOM SECTIONS */
+.room{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:36px;
+  align-items:center;
+  margin:52px 0
+}
+
+.room img{
+  width:100%;
+  height:310px;
+  object-fit:cover;
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(27,49,39,.15),0 2px 7px rgba(27,49,39,.07);
+  border:1px solid rgba(255,255,255,.85);
+  transition:transform .25s ease,box-shadow .25s ease
+}
+
+.room img:hover{
+  transform:translateY(-3px);
+  box-shadow:0 17px 36px rgba(27,49,39,.2)
+}
+
+.room p{margin-bottom:12px}
+
+/* FEATURE ICONS */
+.icon-line{
+  display:flex;
+  gap:22px;
+  flex-wrap:wrap;
+  margin:24px 0 0
+}
+
+.icon-line img{
+  width:34px;
+  height:34px;
+  object-fit:cover;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(27,49,39,.12)
+}
+
+/* PHOTO GALLERY */
+.gallery-section{
+  width:min(1120px,calc(100% - 48px));
+  margin:0 auto;
+  padding:10px 0 90px
+}
+
+.gallery-heading{
+  text-align:center;
+  margin:0 0 12px;
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:500;
+  letter-spacing:-.03em
+}
+
+.gallery-intro{
+  text-align:center;
+  color:#626c67;
+  margin:0 auto 34px;
+  max-width:620px
+}
+
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px
+}
+
+.gallery-item{
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:0;
+  padding:0;
+  overflow:hidden;
+  border:0;
+  border-radius:16px;
+  background:#f2f5f3;
+  box-shadow:0 8px 22px rgba(27,49,39,.13),0 2px 6px rgba(27,49,39,.06);
+  transition:transform .25s ease,box-shadow .25s ease;
+  cursor:zoom-in
+}
+
+.gallery-item img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  border-radius:0;
+  transition:transform .35s ease
+}
+
+.gallery-item:hover{
+  transform:translateY(-4px);
+  box-shadow:0 15px 30px rgba(27,49,39,.2),0 4px 9px rgba(27,49,39,.08)
+}
+
+.gallery-item:hover img{
+  transform:scale(1.045)
+}
+
+.gallery-item:focus-visible,
+.lightbox-close:focus-visible{
+  outline:3px solid #8bc6a8;
+  outline-offset:3px
+}
+
+/* ENLARGED PHOTO VIEWER */
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:60px 24px 40px;
+  background:rgba(12,20,16,.94)
+}
+
+.lightbox.open{display:flex}
+
+.lightbox img{
+  max-width:min(1200px,94vw);
+  max-height:82vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4)
+}
+
+.lightbox-close{
+  position:absolute;
+  top:16px;
+  right:20px;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  min-width:46px;
+  padding:6px 14px;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:50%;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font-size:1.8rem;
+  line-height:1;
+  cursor:pointer
+}
+
+.lightbox-close:hover{
+  background:rgba(255,255,255,.28)
+}
+
+.lightbox-caption{
+  position:absolute;
+  bottom:10px;
+  left:0;
+  right:0;
+  color:#fff;
+  text-align:center;
+  font-size:.9rem
+}
+
+/* FOOTER */
+footer{
+  padding:32px 24px;
+  border-top:1px solid #e7eae8;
+  text-align:center;
+  color:#69716d;
+  font-size:.85rem
+}
+
+/* TABLETS */
+@media(max-width:850px){
+  .gallery-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:13px
+  }
+
+  .room{gap:24px}
+}
+
+/* MOBILE */
+@media(max-width:650px){
+  .hero{
+    min-height:590px;
+    padding:72px 22px 100px;
+    background-position:center center
+  }
+
+  .hero:after{inset:8px}
+
+  .hero-kicker{
+    font-size:.65rem;
+    letter-spacing:.15em;
+    line-height:1.8;
+    margin-bottom:20px
+  }
+
+  h1{
+    margin-bottom:20px;
+    font-size:clamp(2.6rem,11vw,4rem)
+  }
+
+  .hero-subtitle{
+    font-size:1rem;
+    line-height:1.75
+  }
+
+  .booking-section{padding:0 14px 50px}
+
+  .booking{
+    margin-top:-58px;
+    padding:24px 18px;
+    border-radius:14px
+  }
+
+  .fields,.room{
+    grid-template-columns:1fr;
+    gap:20px
+  }
+
+  .wide{grid-column:auto}
+
+  .guests{gap:10px}
+
+  .content{
+    width:calc(100% - 36px);
+    padding:58px 0 60px
+  }
+
+  .room{margin:38px 0}
+
+  .room img{
+    height:260px;
+    border-radius:16px
+  }
+
+  .photo{
+    height:clamp(240px,65vw,380px);
+    margin:30px 0 48px;
+    border-radius:16px
+  }
+
+  .gallery-section{
+    width:calc(100% - 36px);
+    padding-bottom:64px
+  }
+
+  .gallery-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:11px
+  }
+
+  .gallery-item{border-radius:12px}
+
+  .lightbox{padding:60px 12px 36px}
+
+  .lightbox img{
+    max-width:96vw;
+    max-height:78vh;
+    border-radius:12px
+  }
+
+  .lightbox-close{
+    top:12px;
+    right:12px
+  }
+}
+
+/* SMALL MOBILE SCREENS */
+@media(max-width:360px){
+  .hero{padding-left:16px;padding-right:16px}
+
+  .booking{padding:22px 14px}
+
+  .guests{gap:7px}
+
+  input,select{padding:12px 8px;font-size:.9rem}
+
+  .gallery-grid{gap:8px}
+}
+
+/* REDUCED MOTION ACCESSIBILITY */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO SECTION -->
+<section class="hero" aria-label="Welcome to REEF SHINE THODDOO">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="hero-kicker">REEF SHINE · THODDOO · MALDIVES</p>
+      <h1>Your Island Escape Begins Here</h1>
+      <p class="hero-subtitle">Stay close to the beach, discover the beauty of Thoddoo, and enjoy a relaxed Maldivian island experience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING SECTION -->
+<section class="booking-section" aria-label="Booking enquiry">
+  <form class="booking" id="bookingForm">
+    <h2>Book your stay</h2>
+
+    <div class="fields">
+
+      <label class="field wide">
+        <span>Destination / property name</span>
+        <input id="destination" name="destination"
+               value="REEF SHINE Thoddoo" required>
+      </label>
+
+      <label class="field">
+        <span>Check-in</span>
+        <input id="checkin" name="checkin" type="date" required>
+      </label>
+
+      <label class="field">
+        <span>Check-out</span>
+        <input id="checkout" name="checkout" type="date" required>
+      </label>
+
+      <div class="field wide">
+        <span>Guests &amp; rooms</span>
+
+        <div class="guests">
+          <label>
+            <span>Adults</span>
+            <select id="adults" name="adults">
+              <option>1</option>
+              <option selected>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Children</span>
+            <select id="children" name="children">
+              <option selected>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Rooms</span>
+            <select id="rooms" name="rooms">
+              <option selected>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <label class="field wide">
+        <span>Airport transfer</span>
+        <select id="airportTransfer" name="airportTransfer">
+          <option value="No" selected>No, thank you</option>
+          <option value="Yes">Yes, please include transfer</option>
+        </select>
+      </label>
+
+      <div class="wide">
+        <button type="submit" style="width:100%">
+          CHECK AVAILABILITY ON WHATSAPP
+        </button>
+
+        <p class="note">Please send your booking enquiry through WhatsApp. We will confirm availability and the best price.</p>
+      </div>
+
+    </div>
+  </form>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+  <h2>REEF SHINE Thoddoo Accommodation</h2>
+  <h3>Your comfortable stay in Thoddoo</h3>
+
+  <p>Clean, comfortable accommodation in a peaceful island setting.</p>
+
+  <p>Welcome to REEF SHINE THODDOO, your comfortable home away from home in the Maldives. Enjoy cosy rooms, air conditioning, private bathrooms, complimentary Wi-Fi, and a relaxing atmosphere. With convenient access to beautiful beaches, local cafés, and island attractions, you can unwind in comfort and explore Thoddoo at your own pace for a memorable island getaway.</p>
+
+  <img class="photo"
+       src="1.jpg"
+       alt="REEF SHINE Thoddoo accommodation"
+       loading="lazy">
+
+  <h2>Rooms at REEF SHINE Thoddoo</h2>
+
+  <div class="room">
+    <img src="2.jpg"
+         alt="Deluxe Double or Twin Room with Balcony"
+         loading="lazy">
+
+    <div>
+      <h3>Deluxe Double or Twin Room with Balcony</h3>
+      <p>24 m² · Air conditioning · Private bathroom · Balcony</p>
+      <p><strong>REEF SHINE · THODDOO</strong></p>
+      <p>Enjoy a relaxing stay in our Deluxe Double or Twin Room with Balcony at REEF SHINE THODDOO. Spanning 24 m², this comfortable room features air conditioning, a private bathroom, and a balcony where you can unwind after a day of island adventures. Perfect for couples, friends, or travel companions seeking comfort, privacy, and a memorable Maldivian getaway.</p>
+    </div>
+  </div>
+
+  <div class="room">
+    <img src="3.jpg"
+         alt="Budget Double or Twin Room"
+         loading="lazy">
+
+    <div>
+      <h3>Budget Double or Twin Room</h3>
+      <p>24 m² · Air conditioning · Private bathroom · Kitchenette</p>
+      <p><strong>Comfortable stay · Thoddoo</strong></p>
+      <p>Enjoy comfort and great value in our Budget Double or Twin Room at REEF SHINE THODDOO. This spacious 24 m² room features air conditioning, a private bathroom, and a convenient kitchenette for added flexibility during your stay. Ideal for couples, friends, or travellers seeking an affordable and relaxing island getaway with the freedom to make themselves at home.</p>
+    </div>
+  </div>
+
+  <div class="room">
+    <img src="4.jpg"
+         alt="Garden View Accommodation"
+         loading="lazy">
+
+    <div>
+      <h3>Garden View Accommodation</h3>
+      <p>Peaceful surroundings · Garden views · Free Wi-Fi</p>
+      <p><strong>Island relaxation · Thoddoo</strong></p>
+      <p>Relax and unwind in our Garden View Accommodation at REEF SHINE THODDOO. Enjoy peaceful surroundings, refreshing garden views, and complimentary Wi-Fi to stay connected throughout your holiday. Perfect for guests seeking a calm, comfortable retreat where they can recharge, enjoy island living, and experience a relaxing Maldivian getaway.</p>
+    </div>
+  </div>
+
+  <div class="room">
+    <img src="5.jpg"
+         alt="Family-Friendly Stay"
+         loading="lazy">
+
+    <div>
+      <h3>Family-Friendly Stay</h3>
+      <p>Comfortable accommodation for couples and families</p>
+      <p><strong>Family stay · Thoddoo</strong></p>
+      <p>Make wonderful holiday memories at REEF SHINE THODDOO, with comfortable accommodation suited to couples and families. Enjoy a welcoming atmosphere, relaxing spaces, and the convenience of staying together while exploring Thoddoo’s beautiful beaches and local attractions. Whether it’s a romantic escape or a family adventure, enjoy a memorable island stay filled with comfort and togetherness.</p>
+    </div>
+  </div>
+
+  <h2>Explore Thoddoo</h2>
+
+  <p>A beautiful local island in the Maldives. Enjoy the island's beautiful beaches, discover local Maldivian life, explore the waters and marine life, and taste fresh island flavours.</p>
+
+  <p>Discover the beauty of Thoddoo, a tropical island in the Maldives known for its stunning beaches, lush greenery, and vibrant local life. Swim in crystal-clear waters, explore fascinating marine life, experience authentic Maldivian culture, and savour fresh local flavours. From peaceful beach days to exciting island adventures, Thoddoo offers unforgettable experiences for every traveller.</p>
+
+  <img class="photo"
+       src="6.jpg"
+       alt="Thoddoo island and beach"
+       loading="lazy">
+
+  <h2>Discover Thoddoo with REEF SHINE</h2>
+
+  <p>Stay in a peaceful island guest house and experience beaches, local culture, tropical gardens, food and the relaxed atmosphere of Thoddoo.</p>
+
+  <p>Discover the charm of Thoddoo with REEF SHINE THODDOO as your comfortable island retreat. Enjoy beautiful beaches, explore lush tropical gardens, experience authentic Maldivian culture, and savour delicious local flavours. Relax, explore at your own pace, and create unforgettable memories surrounded by the natural beauty and peaceful atmosphere of island life.</p>
+
+ 
+
+</main>
+
+<!-- PHOTO GALLERY: IMAGES 1.jpg TO 37.jpg -->
+<section class="gallery-section" aria-labelledby="gallery-title">
+
+  <h2 class="gallery-heading" id="gallery-title">Photo Gallery</h2>
+
+  <p class="gallery-intro">Take a closer look at REEF SHINE and the beauty of Thoddoo.</p>
+
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Gallery thumbnails are generated by JavaScript -->
+  </div>
+
+</section>
+
+<!-- SINGLE ENLARGED PHOTO VIEWER -->
+<div class="lightbox"
+     id="lightbox"
+     role="dialog"
+     aria-modal="true"
+     aria-label="Enlarged gallery photo"
+     aria-hidden="true">
+
+  <button class="lightbox-close"
+          id="lightboxClose"
+          type="button"
+          aria-label="Close enlarged photo">
+    &times;
+  </button>
+
+  <img id="lightboxImage"
+       src=""
+       alt="Enlarged REEF SHINE THODDOO photo">
+
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 REEF SHINE THODDOO. All rights reserved.
+  Designed by mngbth@gmail.com
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =================================
+     BOOKING FORM ELEMENTS
+  ================================= */
+
+  const form = document.getElementById('bookingForm');
+  const checkin = document.getElementById('checkin');
+  const checkout = document.getElementById('checkout');
+
+  // Existing REEF SHINE WhatsApp number
+  const whatsappNumber = '9607887941';
+
+
+  /* =================================
+     GENERATE PHOTO GALLERY
+     Images: 1.jpg to 37.jpg
+  ================================= */
+
+  const galleryGrid = document.getElementById('galleryGrid');
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxClose = document.getElementById('lightboxClose');
+
+  let lastFocusedElement = null;
+
+  for (let i = 1; i <= 37; i++) {
+    const button = document.createElement('button');
+
+    button.type = 'button';
+    button.className = 'gallery-item';
+    button.dataset.src = i + '.jpg';
+
+    button.setAttribute(
+      'aria-label',
+      'Enlarge photo ' + i
+    );
+
+    const img = document.createElement('img');
+
+    img.src = i + '.jpg';
+    img.alt = 'REEF SHINE THODDOO photo ' + i;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+
+    // Display a useful fallback if a gallery image is missing.
+    img.addEventListener('error', function () {
+      button.classList.add('image-missing');
+      button.setAttribute(
+        'aria-label',
+        'Photo ' + i + ' could not be loaded'
+      );
+    });
+
+    button.appendChild(img);
+    galleryGrid.appendChild(button);
+  }
+
+
+  /* =================================
+     OPEN AND CLOSE PHOTO VIEWER
+  ================================= */
+
+  function openLightbox(item) {
+    const thumbnail = item.querySelector('img');
+
+    if (!thumbnail || !thumbnail.complete ||
+        thumbnail.naturalWidth === 0) {
+      // Still allow an attempt to open the original image
+      // if the thumbnail has not loaded successfully.
+    }
+
+    lastFocusedElement = item;
+
+    lightboxImage.src = item.dataset.src;
+    lightboxImage.alt = thumbnail
+      ? thumbnail.alt
+      : 'REEF SHINE THODDOO photo';
+
+    const photoNumber = Number(
+      item.dataset.src.replace('.jpg', '')
+    );
+
+    lightboxCaption.textContent =
+      'Photo ' + photoNumber + ' of 37';
+
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+
+    document.body.style.overflow = 'hidden';
+
+    lightboxClose.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+
+    lightboxImage.removeAttribute('src');
+    document.body.style.overflow = '';
+
+    if (lastFocusedElement) {
+      lastFocusedElement.focus();
+    }
+  }
+
+  // One event handler serves all 37 thumbnails.
+  galleryGrid.addEventListener('click', function (event) {
+    const item = event.target.closest('.gallery-item');
+
+    if (item && galleryGrid.contains(item)) {
+      openLightbox(item);
+    }
+  });
+
+  lightboxClose.addEventListener('click', closeLightbox);
+
+  // Close when the dark background is clicked.
+  lightbox.addEventListener('click', function (event) {
+    if (event.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  // Close with Escape.
+  document.addEventListener('keydown', function (event) {
+    if (
+      event.key === 'Escape' &&
+      lightbox.classList.contains('open')
+    ) {
+      closeLightbox();
+    }
+  });
+
+
+  /* =================================
+     BOOKING DATE DEFAULTS
+  ================================= */
+
+  function dateString(date) {
+    const year = date.getFullYear();
+
+    const month = String(
+      date.getMonth() + 1
+    ).padStart(2, '0');
+
+    const day = String(
+      date.getDate()
+    ).padStart(2, '0');
+
+    return year + '-' + month + '-' + day;
+  }
+
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  checkin.min = dateString(today);
+  checkout.min = dateString(tomorrow);
+
+  checkin.value = dateString(today);
+  checkout.value = dateString(tomorrow);
+
+
+  /* =================================
+     VALIDATE CHECK-IN / CHECK-OUT
+  ================================= */
+
+  checkin.addEventListener('change', function () {
+    if (!checkin.value) return;
+
+    const next = new Date(
+      checkin.value + 'T00:00:00'
+    );
+
+    next.setDate(next.getDate() + 1);
+
+    const minCheckout = dateString(next);
+
+    checkout.min = minCheckout;
+
+    if (
+      !checkout.value ||
+      checkout.value <= checkin.value
+    ) {
+      checkout.value = minCheckout;
+    }
+  });
+
+
+  /* =================================
+     WHATSAPP BOOKING ENQUIRY
+  ================================= */
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    if (!form.reportValidity()) {
+      return;
+    }
+
+    if (checkout.value <= checkin.value) {
+      checkout.setCustomValidity(
+        'Check-out must be after check-in.'
+      );
+
+      checkout.reportValidity();
+      checkout.setCustomValidity('');
+
+      return;
+    }
+
+    const message = [
+      'Hello REEF SHINE Thoddoo!',
+      'I would like to make a booking enquiry.',
+      '',
+      'Destination: ' +
+        document.getElementById('destination').value,
+      'Check-in: ' + checkin.value,
+      'Check-out: ' + checkout.value,
+      'Adults: ' +
+        document.getElementById('adults').value,
+      'Children: ' +
+        document.getElementById('children').value,
+      'Rooms: ' +
+        document.getElementById('rooms').value,
+      'Airport transfer: ' +
+        document.getElementById('airportTransfer').value,
+      '',
+      'Please let me know availability and the best price.'
+    ].join('\n');
+
+    const whatsappURL =
+      'https://wa.me/' +
+      whatsappNumber +
+      '?text=' +
+      encodeURIComponent(message);
+
+    window.open(
+      whatsappURL,
+      '_blank',
+      'noopener'
+    );
+  });
+
+})();
+</script>
+
+</body>
+</html>
