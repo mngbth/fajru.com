@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f7f2">
+<title>Household Items Request</title>
+
+<style>
+:root {
+  --green: #285b43;
+  --light-green: #eaf2eb;
+  --background: #f6f7f4;
+  --text: #202720;
+  --muted: #737b74;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--background);
+}
+
+header {
+  background: white;
+  padding: 24px 16px;
+  text-align: center;
+  border-bottom: 1px solid #e7ebe5;
+}
+
+header h1 {
+  font-size: 26px;
+  margin: 0 0 8px;
+  color: var(--green);
+}
+
+header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+main {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px 14px 180px;
+}
+
+.section-title {
+  font-size: 20px;
+  margin: 4px 0 16px;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.item {
+  background: white;
+  border: 1px solid #e5e9e3;
+  border-radius: 14px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.item img {
+  width: 100%;
+  height: 145px;
+  display: block;
+  object-fit: cover;
+  background: #e9ede7;
+}
+
+.item-info {
+  padding: 12px;
+}
+
+.item h3 {
+  font-size: 15px;
+  margin: 0 0 12px;
+  min-height: 36px;
+  line-height: 1.3;
+}
+
+.item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--light-green);
+  color: var(--green);
+  font-size: 21px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.qty-btn:active {
+  transform: scale(.94);
+}
+
+.qty-number {
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 12px;
+  text-align: center;
+}
+
+.summary {
+  background: white;
+  border: 1px solid #e2e7e0;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 22px;
+}
+
+.summary h2 {
+  margin: 0 0 12px;
+  font-size: 19px;
+}
+
+.summary-empty {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #edf0eb;
+  font-size: 14px;
+}
+
+.summary-row:last-child {
+  border-bottom: 0;
+}
+
+.customer-fields {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.customer-fields input,
+.customer-fields textarea {
+  width: 100%;
+  border: 1px solid #dce2d9;
+  border-radius: 9px;
+  padding: 12px;
+  font: inherit;
+  background: white;
+}
+
+.customer-fields textarea {
+  resize: vertical;
+  min-height: 75px;
+}
+
+.bottom-bar {
+  position: fixed;
+  z-index: 5;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e1e6df;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 18px #00000008;
+}
+
+.bottom-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.selected-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.selected-info strong {
+  display: block;
+  font-size: 18px;
+}
+
+.selected-info small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.request-btn {
+  border: 0;
+  border-radius: 11px;
+  padding: 15px 17px;
+  background: #16834a;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.request-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+@media (min-width: 650px) {
+  .items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .item img {
+    height: 200px;
+  }
+
+  main {
+    padding-top: 28px;
+  }
+
+  header h1 {
+    font-size: 32px;
+  }
+}
+
+@media (min-width: 950px) {
+  .items {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Household Items</h1>
+  <p>Select the items you need and send your request through WhatsApp.</p>
+</header>
+
+<main>
+  <h2 class="section-title">Browse items</h2>
+
+  <div class="items" id="items"></div>
+
+  <section class="summary" id="summary">
+    <h2>Your request</h2>
+    <div id="summary-content" class="summary-empty">
+      No items selected yet. Tap + to add items.
+    </div>
+
+    <div class="customer-fields">
+      <input
+        type="text"
+        id="customer-name"
+        placeholder="Your name (optional)"
+        autocomplete="name"
+      >
+
+      <input
+        type="text"
+        id="customer-location"
+        placeholder="Island / delivery location (optional)"
+      >
+
+      <textarea
+        id="customer-notes"
+        placeholder="Additional details (optional)"
+      ></textarea>
+    </div>
+
+    <p class="note">
+      Photos are for illustration only. Availability, prices and delivery
+      arrangements can be confirmed through WhatsApp.
+    </p>
+  </section>
+</main>
+
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="selected-info">
+      <strong id="selected-count">0 items</strong>
+      <small>Ready to request</small>
+    </div>
+
+    <button
+      class="request-btn"
+      id="request-btn"
+      disabled
+      onclick="sendRequest()"
+    >
+      Request via WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+/*
+  SETTINGS
+  Change the WhatsApp number and items here.
+
+  Maldives country code: 960
+  WhatsApp number format: country code + phone number,
+  without the + sign, spaces or dashes.
+*/
+
+const WHATSAPP_NUMBER = "9607207899";
+
+const products = [
+  {
+    id: 1,
+    name: "Electric Kettle",
+    image: "https://images.unsplash.com/photo-1594213114663-d94db9b1718a?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 2,
+    name: "Table Lamp",
+    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 3,
+    name: "Storage Basket",
+    image: "https://images.unsplash.com/photo-1593085260707-5377ba37f868?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 4,
+    name: "Cooking Pan",
+    image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 5,
+    name: "Drinking Glasses",
+    image: "https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 6,
+    name: "Pillow",
+    image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 7,
+    name: "Indoor Plant Pot",
+    image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 8,
+    name: "Laundry Basket",
+    image: "https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 9,
+    name: "Kitchen Utensils",
+    image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 10,
+    name: "Wall Clock",
+    image: "https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 11,
+    name: "Sofa Cushion",
+    image: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    id: 12,
+    name: "Storage Container",
+    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=700&q=80"
+  }
+];
+
+// Store the selected quantities by product ID.
+const quantities = {};
+
+function renderProducts() {
+  const container = document.getElementById("items");
+
+  container.innerHTML = products.map(product => `
+    <article class="item">
+      <img
+        src="${product.image}"
+        alt="${product.name}"
+        loading="lazy"
+        onerror="this.onerror=null;this.src='https://placehold.co/600x400/eaf2eb/285b43?text=Household+Item';"
+      >
+
+      <div class="item-info">
+        <h3>${product.name}</h3>
+
+        <div class="item-bottom">
+          <span style="font-size:12px;color:#737b74">
+            Quantity
+          </span>
+
+          <div class="quantity">
+            <button
+              class="qty-btn"
+              aria-label="Remove one ${product.name}"
+              onclick="changeQuantity(${product.id}, -1)"
+            >−</button>
+
+            <span
+              class="qty-number"
+              id="qty-${product.id}"
+              aria-live="polite"
+            >0</span>
+
+            <button
+              class="qty-btn"
+              aria-label="Add one ${product.name}"
+              onclick="changeQuantity(${product.id}, 1)"
+            >+</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+function changeQuantity(id, change) {
+  const current = quantities[id] || 0;
+  quantities[id] = Math.max(0, current + change);
+
+  document.getElementById(`qty-${id}`).textContent =
+    quantities[id];
+
+  updateSummary();
+}
+
+function getSelectedItems() {
+  return products.filter(product => (quantities[product.id] || 0) > 0);
+}
+
+function updateSummary() {
+  const selected = getSelectedItems();
+
+  const totalQuantity = selected.reduce(
+    (sum, product) => sum + quantities[product.id], 0
+  );
+
+  document.getElementById("selected-count").textContent =
+    `${totalQuantity} ${totalQuantity === 1 ? "item" : "items"}`;
+
+  document.getElementById("request-btn").disabled =
+    selected.length === 0;
+
+  const summary = document.getElementById("summary-content");
+
+  if (selected.length === 0) {
+    summary.className = "summary-empty";
+    summary.textContent =
+      "No items selected yet. Tap + to add items.";
+    return;
+  }
+
+  summary.className = "";
+
+  summary.innerHTML = selected.map(product => {
+    const row = document.createElement("div");
+    row.className = "summary-row";
+
+    const name = document.createElement("span");
+    name.textContent = product.name;
+
+    const qty = document.createElement("strong");
+    qty.textContent = `× ${quantities[product.id]}`;
+
+    row.append(name, qty);
+    return row;
+  }).reduce((fragment, row) => {
+    fragment.appendChild(row);
+    return fragment;
+  }, document.createDocumentFragment());
+
+}
+
+function sendRequest() {
+  const selected = getSelectedItems();
+
+  if (selected.length === 0) {
+    alert("Please select at least one item.");
+    return;
+  }
+
+  const customerName =
+    document.getElementById("customer-name").value.trim();
+
+  const location =
+    document.getElementById("customer-location").value.trim();
+
+  const notes =
+    document.getElementById("customer-notes").value.trim();
+
+  let message = "HOUSEHOLD ITEMS REQUEST\n\n";
+
+  if (customerName) {
+    message += `Customer: ${customerName}\n`;
+  }
+
+  if (location) {
+    message += `Delivery location: ${location}\n`;
+  }
+
+  message += "\nRequested items:\n";
+
+  selected.forEach((product, index) => {
+    message += `${index + 1}. ${product.name} — Quantity: ${quantities[product.id]}\n`;
+  });
+
+  const totalQuantity = selected.reduce(
+    (sum, product) => sum + quantities[product.id], 0
+  );
+
+  message += `\nTotal quantity: ${totalQuantity}`;
+
+  if (notes) {
+    message += `\n\nAdditional details: ${notes}`;
+  }
+
+  message += "\n\nPlease confirm availability and prices. Thank you.";
+
+  const whatsappURL =
+    `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+  window.open(whatsappURL, "_blank", "noopener,noreferrer");
+}
+
+renderProducts();
+updateSummary();
+</script>
+
+</body>
+</html>
