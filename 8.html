@@ -1,0 +1,730 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071923">
+<title>Random Question Generator</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #071923;
+  --panel: #102b38;
+  --panel2: #153746;
+  --accent: #58e0b1;
+  --text: #f4fbff;
+  --muted: #a9c2cc;
+  --danger: #ff9a9a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100svh;
+  background: radial-gradient(ellipse at 50% 0%, #174454 0%, var(--bg) 65%);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 2.5vw, 32px);
+}
+
+.app {
+  width: min(100%, 1500px);
+  min-height: min(92svh, 900px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(18px, 3vh, 32px);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.3vw, 1.8rem);
+  letter-spacing: .04em;
+  font-weight: 700;
+}
+
+.tag {
+  color: var(--muted);
+  font-size: clamp(.72rem, 1.2vw, .95rem);
+}
+
+.display {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.display-content {
+  width: 100%;
+}
+
+#question-number {
+  color: var(--accent);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+#number {
+  width: 100%;
+  font-size: clamp(1.6rem, 4vw, 4rem);
+  font-weight: 750;
+  line-height: 1.3;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+  color: var(--text);
+  text-shadow: none;
+  max-width: 1250px;
+  margin: auto;
+  padding: 10px;
+}
+
+#number.placeholder {
+  color: var(--accent);
+  font-size: clamp(3.5rem, 15vw, 13rem);
+}
+
+#number.completed {
+  color: var(--accent);
+  font-size: clamp(2rem, 7vw, 5rem);
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.status {
+  min-height: 1.5em;
+  margin-top: 18px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: clamp(.85rem, 1.5vw, 1.1rem);
+}
+
+.progress {
+  color: var(--accent);
+  font-size: clamp(.85rem, 1.5vw, 1.1rem);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.main-generate {
+  min-width: clamp(190px, 28vw, 340px);
+  min-height: clamp(58px, 8vh, 82px);
+  font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+}
+
+.controls {
+  background: #0d2632dd;
+  border: 1px solid #ffffff1a;
+  border-radius: 24px;
+  padding: clamp(14px, 2vw, 26px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 18px 55px #0003;
+}
+
+button {
+  border: 0;
+  border-radius: 14px;
+  min-height: 54px;
+  padding: 13px 25px;
+  background: var(--accent);
+  color: #06251d;
+  font: inherit;
+  font-weight: 800;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .12s ease, filter .12s ease;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+button:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.tools {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.secondary {
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #ffffff14;
+  color: var(--text);
+  font-size: .9rem;
+  font-weight: 600;
+  border: 1px solid #ffffff20;
+}
+
+#error {
+  color: var(--danger);
+  min-height: 1.2em;
+  font-size: .9rem;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+  .app {
+    min-height: 94svh;
+    gap: 12px;
+  }
+
+  header {
+    align-items: flex-start;
+  }
+
+  .display {
+    min-height: 35svh;
+  }
+
+  #number {
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+  }
+
+  #number.placeholder {
+    font-size: clamp(3rem, 14vw, 6rem);
+  }
+
+  .controls {
+    border-radius: 18px;
+  }
+
+  .main-generate {
+    width: min(100%, 340px);
+  }
+}
+
+@media (max-width: 700px) and (orientation: landscape) {
+  body {
+    padding: 8px 16px;
+  }
+
+  .app {
+    min-height: 96svh;
+    gap: 8px;
+  }
+
+  header {
+    min-height: 24px;
+  }
+
+  h1 {
+    font-size: 1rem;
+  }
+
+  .tag {
+    font-size: .7rem;
+  }
+
+  .display {
+    padding: 0;
+  }
+
+  #number {
+    font-size: clamp(1.2rem, 4vh, 2rem);
+  }
+
+  #number.placeholder {
+    font-size: clamp(3rem, 18vh, 8rem);
+  }
+
+  #question-number {
+    margin-bottom: 6px;
+    font-size: .9rem;
+  }
+
+  .controls {
+    padding: 9px 12px;
+    gap: 5px;
+    border-radius: 14px;
+  }
+
+  button {
+    min-height: 42px;
+    padding: 8px 14px;
+    font-size: .95rem;
+  }
+
+  .main-generate {
+    min-height: 48px;
+    width: min(75vw, 300px);
+    font-size: 1.05rem;
+  }
+
+  .status {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: .75rem;
+  }
+
+  .progress {
+    margin-bottom: 7px;
+    font-size: .75rem;
+  }
+
+  .tools {
+    margin-top: 4px;
+  }
+
+  .secondary {
+    min-height: 30px;
+    padding: 4px 10px;
+    font-size: .75rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  .controls {
+    max-width: 1050px;
+    width: 100%;
+    align-self: center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="app">
+
+  <header>
+    <h1>RANDOM QUESTION GENERATOR</h1>
+    <div class="tag">153 Questions · No Repetition</div>
+  </header>
+
+  <section class="display" aria-live="polite" aria-atomic="true">
+
+    <div class="display-content">
+
+      <div id="question-number"></div>
+
+      <div id="number" class="placeholder">
+        READY?
+      </div>
+
+      <div class="status" id="status">
+        Press GENERATE to begin.
+      </div>
+
+      <div class="progress" id="progress">
+        Questions remaining: 153
+      </div>
+
+      <button class="main-generate" id="generate">
+        GENERATE
+      </button>
+
+    </div>
+
+  </section>
+
+  <section>
+
+    <div class="controls">
+
+      <div id="error" role="alert"></div>
+
+      <div class="tools">
+        <button class="secondary" id="reset" type="button">
+          ↻ Reset / Shuffle
+        </button>
+
+        <button class="secondary" id="fullscreen" type="button">
+          ⛶ Full screen
+        </button>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+// ==========================================
+// ALL 153 QUESTIONS
+// ==========================================
+
+const questions = [
+"What are financial institutions?",
+"What financial services do financial institutions provide?",
+"Name three examples of financial institutions.",
+"How do financial institutions support economic growth and business activities?",
+"What is exchange?",
+"What is the barter system?",
+"How does a farmer exchange rice for fish under the barter system?",
+"What is meant by a double coincidence of wants?",
+"What is one disadvantage of the barter system related to measuring value?",
+"Why is it difficult to store wealth under the barter system?",
+"Why is it difficult to divide goods under the barter system?",
+"Why is it difficult to make future payments under the barter system?",
+"Why has money evolved over time?",
+"What is commodity money?",
+"Name four valuable goods that were used as commodity money.",
+"What is metallic money?",
+"Which three metals were used to make metallic coins?",
+"What is paper money?",
+"Who issues and controls paper money?",
+"What is electronic money?",
+"Name three methods of making electronic payments.",
+"What is digital and cryptocurrency?",
+"What is meant by a medium of exchange?",
+"How does money act as a measure of value?",
+"How does money act as a store of value?",
+"What is meant by a means of deferred payment?",
+"Give two examples of payments that can be made in the future using money.",
+"How does money allow the transfer of value?",
+"What is acceptability as a characteristic of money?",
+"What is durability as a characteristic of money?",
+"What is portability as a characteristic of money?",
+"What is divisibility as a characteristic of money?",
+"What is uniformity as a characteristic of money?",
+"What is recognizability as a characteristic of money?",
+"What is meant by limited supply as a characteristic of money?",
+"What is stability of value as a characteristic of money?",
+"What is a banking system?",
+"What is collateral?",
+"What is liquidity in banking?",
+"What is profitability in banking?",
+"What is the relationship between liquidity and profitability in banking?",
+"Name the three main types of banks.",
+"What are the three main functions of banks?",
+"What are the four main functions of banks?",
+"Name the three types of bank accounts.",
+"Name four payment services provided by banks.",
+"What are the two types of bank loans based on their repayment period?",
+"What is an overdraft?",
+"How do debit and credit cards facilitate payments?",
+"What is online banking?",
+"What is mobile banking?",
+"What is a cheque?",
+"What is a bank transfer?",
+"What are standing orders and direct debits used for?",
+"How do standing orders and direct debits make regular bill payments?",
+"How do banks create money?",
+"What is the first step in the process of credit creation?",
+"What do banks do with customers' deposits before lending money?",
+"What happens to the remaining money after banks keep the required reserves?",
+"What happens to loans during the process of credit creation?",
+"Why does the credit creation process repeat?",
+"What is a central bank?",
+"What is the central bank of the Maldives called?",
+"What are the three main roles of a central bank?",
+"What is the central bank's role in issuing currency?",
+"What is the central bank's role in regulating banks?",
+"What is the central bank's role in controlling the money supply?",
+"What is meant by the central bank being the sole note-issuing authority?",
+"What does it mean when the central bank acts as the government's banker?",
+"What does it mean when the central bank acts as the bankers' bank?",
+"What is meant by the central bank being the lender of last resort?",
+"What is the central bank's role in controlling credit?",
+"What is monetary policy?",
+"What is Islamic banking?",
+"Which principles form the basis of Islamic banking?",
+"What is Riba?",
+"What does Islamic banking prohibit regarding interest?",
+"What type of investment does Islamic banking promote?",
+"What principles does Islamic banking follow when sharing profit and risk?",
+"What values does Islamic banking encourage?",
+"What type of activities does Islamic banking support?",
+"What is a stock exchange?",
+"What securities are bought and sold on a stock exchange?",
+"How does a stock exchange help companies raise capital?",
+"What opportunities does a stock exchange provide for investors?",
+"How does a stock exchange provide liquidity for investors?",
+"How does a stock exchange encourage investment and business growth?",
+"How does a stock exchange support economic development?",
+"What is meant by an organised market as a feature of a stock exchange?",
+"What securities are traded on a stock exchange?",
+"How is a stock exchange regulated and supervised?",
+"How does a stock exchange provide liquidity?",
+"How are prices determined on a stock exchange?",
+"What does a stock exchange provide to ensure transparency?",
+"How does a stock exchange help protect investors?",
+"How does a stock exchange facilitate capital formation?",
+"What is meant by continuous trading on a stock exchange?",
+"How does technology improve stock exchange transactions?",
+"What is population?",
+"Why does population matter to an economy?",
+"What do people create demand for in an economy?",
+"What factor of production do people supply?",
+"How do population size and preferences help businesses and governments make decisions?",
+"What is demography?",
+"Through which three factors does population change?",
+"What is a census?",
+"What information about people is collected during a census?",
+"How do governments use census data to plan public services?",
+"How do governments use census data to formulate policies?",
+"How can census data help governments measure social and economic conditions?",
+"How do governments use census data to compare countries?",
+"What is the birth rate?",
+"How is the birth rate measured?",
+"What is the death rate?",
+"How is the death rate measured?",
+"What is net migration?",
+"How is net migration calculated?",
+"What happens to population when net migration is positive?",
+"What happens to population when net migration is negative?",
+"How does early marriage affect the birth rate?",
+"Why can early marriage increase the period during which couples may have children?",
+"How do living standards affect family size in developed countries?",
+"Why may poorer families depend on children for income or food production?",
+"How can customs and beliefs influence family size?",
+"Why do some societies prefer large families for support in old age?",
+"Why might some societies prefer large families to have a male heir?",
+"How can greater female employment opportunities affect childbirth?",
+"How can greater female employment opportunities affect family size?",
+"How does family planning help prevent pregnancy?",
+"How does family planning influence family size?",
+"Why do developed countries generally have lower death rates?",
+"How does better healthcare help lower death rates?",
+"How do clean water and sanitation affect death rates?",
+"How does better nutrition affect death rates?",
+"Why may developing countries have higher death rates?",
+"How can improvements in medicine reduce death rates in developing countries?",
+"Which three events can increase death rates in any country?",
+"How does immigration affect population?",
+"How does emigration affect population?",
+"Why do people move from islands to Malé in the Maldives?",
+"How do foreign workers contribute to the Maldivian population?",
+"How is the natural rate of increase calculated?",
+"How is the actual rate of population increase calculated?",
+"What two factors are considered when calculating the actual rate of population increase?",
+"What are the characteristics of an expansive population pyramid?",
+"What type of population is represented by an expansive population pyramid?",
+"What are the characteristics of a constrictive population pyramid?",
+"What type of population is represented by a constrictive population pyramid?",
+"What is the shape of a stationary population pyramid?",
+"What does a stationary population pyramid indicate about population growth?",
+"What is a population pyramid?",
+"Which two population characteristics are represented in a population pyramid?",
+"How can a population pyramid help governments predict future demand for services?"
+];
+
+// ==========================================
+// RANDOM QUESTION SYSTEM
+// ==========================================
+
+const numberDisplay = document.getElementById('number');
+const questionNumber = document.getElementById('question-number');
+const status = document.getElementById('status');
+const progress = document.getElementById('progress');
+const error = document.getElementById('error');
+const generateButton = document.getElementById('generate');
+
+let shuffledQuestions = [];
+let currentIndex = 0;
+
+// Fisher-Yates shuffle
+function shuffle(array) {
+
+  for (let i = array.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [array[i], array[j]] = [array[j], array[i]];
+
+  }
+
+  return array;
+}
+
+// Reset and prepare a new random sequence
+function resetQuestions() {
+
+  shuffledQuestions = shuffle(
+    questions.map((question, index) => ({
+      text: question,
+      originalNumber: index + 1
+    }))
+  );
+
+  currentIndex = 0;
+
+  numberDisplay.textContent = 'READY?';
+  numberDisplay.className = 'placeholder';
+
+  questionNumber.textContent = '';
+
+  status.textContent =
+    `${questions.length} questions are ready. Press GENERATE to begin.`;
+
+  progress.textContent =
+    `Questions remaining: ${questions.length}`;
+
+  error.textContent = '';
+
+  generateButton.disabled = false;
+  generateButton.textContent = 'GENERATE';
+
+}
+
+// Display next question
+function generateQuestion() {
+
+  // Check whether all questions have been displayed
+  if (currentIndex >= shuffledQuestions.length) {
+
+    showCompleted();
+    return;
+
+  }
+
+  const question = shuffledQuestions[currentIndex];
+
+  // Display original question number
+  questionNumber.textContent =
+    `QUESTION ${question.originalNumber}`;
+
+  // Display question
+  numberDisplay.textContent = question.text;
+  numberDisplay.className = '';
+
+  // Move to the next question
+  currentIndex++;
+
+  const remaining = questions.length - currentIndex;
+
+  // Update progress
+  progress.textContent =
+    `Displayed: ${currentIndex} / ${questions.length}  |  Remaining: ${remaining}`;
+
+  status.textContent =
+    'Read the question and give your answer.';
+
+  // Last question
+  if (remaining === 0) {
+
+    status.textContent =
+      'You have reached the final question!';
+
+    generateButton.disabled = true;
+    generateButton.textContent = 'FINISHED';
+
+  }
+
+}
+
+// Completion message
+function showCompleted() {
+
+  numberDisplay.textContent = 'ALL QUESTIONS COMPLETED!';
+  numberDisplay.className = 'completed';
+
+  questionNumber.textContent = '';
+
+  status.textContent =
+    'All questions have been displayed. No questions were repeated.';
+
+  progress.textContent =
+    `Completed: ${questions.length} / ${questions.length}`;
+
+  generateButton.disabled = true;
+  generateButton.textContent = 'FINISHED';
+
+}
+
+// ==========================================
+// BUTTON EVENTS
+// ==========================================
+
+generateButton.addEventListener('click', generateQuestion);
+
+document.getElementById('reset').addEventListener(
+  'click',
+  resetQuestions
+);
+
+// Fullscreen
+document.getElementById('fullscreen').addEventListener(
+  'click',
+  async () => {
+
+    try {
+
+      if (!document.fullscreenElement) {
+
+        await document.documentElement.requestFullscreen();
+
+      } else {
+
+        await document.exitFullscreen();
+
+      }
+
+    } catch (_) {
+
+      status.textContent =
+        'Full screen is not available in this browser.';
+
+    }
+
+  }
+);
+
+// Spacebar shortcut
+document.addEventListener('keydown', (e) => {
+
+  if (
+    e.code === 'Space' &&
+    !['INPUT', 'TEXTAREA', 'BUTTON'].includes(
+      document.activeElement.tagName
+    )
+  ) {
+
+    e.preventDefault();
+
+    if (!generateButton.disabled) {
+      generateQuestion();
+    }
+
+  }
+
+});
+
+// ==========================================
+// INITIALISE
+// ==========================================
+
+resetQuestions();
+
+</script>
+
+</body>
+</html>
