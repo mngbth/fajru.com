@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071923">
+  <title>Random Question Generator</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #071923;
+      --panel: #102b38;
+      --accent: #58e0b1;
+      --text: #f4fbff;
+      --muted: #a9c2cc;
+      --danger: #ffaaaa;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: clamp(10px, 2.5vw, 32px);
+      display: grid;
+      place-items: center;
+      background: radial-gradient(ellipse at 50% 0%, #174454 0%, var(--bg) 66%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .app {
+      width: min(100%, 1500px);
+      min-height: min(92vh, 900px);
+      min-height: min(92svh, 900px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: clamp(16px, 3vh, 30px);
+    }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    h1 { margin: 0; font-size: clamp(1rem, 2.3vw, 1.8rem); letter-spacing: .04em; font-weight: 800; }
+    .tag { color: var(--muted); font-size: clamp(.72rem, 1.2vw, .95rem); white-space: nowrap; }
+    .display { flex: 1; min-height: 0; display: grid; place-items: center; text-align: center; padding: 10px 0; }
+    .display-content { width: 100%; }
+    #question-number { color: var(--accent); font-size: clamp(1rem, 2vw, 1.5rem); font-weight: 800; margin-bottom: 16px; }
+    #question-text {
+      width: 100%; max-width: 1250px; margin: auto; padding: 10px;
+      color: var(--text); font-size: clamp(1.5rem, 4vw, 4rem);
+      font-weight: 750; line-height: 1.25; overflow-wrap: anywhere;
+    }
+    #question-text.placeholder { color: var(--accent); font-size: clamp(3.5rem, 15vw, 13rem); }
+    #question-text.completed { color: var(--accent); font-size: clamp(2rem, 7vw, 5rem); }
+    .status { min-height: 1.5em; margin: 16px 0 10px; color: var(--muted); font-size: clamp(.85rem, 1.5vw, 1.1rem); }
+    .progress { color: var(--accent); font-size: clamp(.85rem, 1.5vw, 1.1rem); font-weight: 750; margin-bottom: 20px; }
+    button { border: 0; border-radius: 14px; min-height: 54px; padding: 13px 25px; background: var(--accent); color: #06251d; font: inherit; font-weight: 800; font-size: clamp(1rem, 1.6vw, 1.25rem); cursor: pointer; transition: transform .12s ease, filter .12s ease; }
+    button:hover:not(:disabled) { filter: brightness(1.06); }
+    button:active:not(:disabled) { transform: scale(.98); }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    .main-generate { min-width: clamp(190px, 28vw, 340px); min-height: clamp(58px, 8vh, 82px); font-size: clamp(1.15rem, 2.2vw, 1.7rem); }
+    .controls { width: 100%; background: #0d2632dd; border: 1px solid #ffffff1a; border-radius: 24px; padding: clamp(14px, 2vw, 26px); display: flex; flex-direction: column; gap: 10px; box-shadow: 0 18px 55px #0003; }
+    .tools { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .secondary { min-height: 40px; padding: 8px 14px; border-radius: 10px; background: #ffffff14; color: var(--text); font-size: .9rem; font-weight: 650; border: 1px solid #ffffff20; }
+    #error { color: var(--danger); min-height: 1.2em; font-size: .9rem; }
+    @media (max-width: 600px) and (orientation: portrait) {
+      .app { min-height: 94svh; gap: 12px; }
+      header { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .display { min-height: 35svh; }
+      #question-text { font-size: clamp(1.35rem, 5vw, 2.2rem); }
+      #question-text.placeholder { font-size: clamp(3rem, 14vw, 6rem); }
+      .controls { border-radius: 18px; }
+      .main-generate { width: min(100%, 340px); }
+    }
+    @media (max-width: 700px) and (orientation: landscape) {
+      body { padding: 8px 16px; }
+      .app { min-height: 96svh; gap: 7px; }
+      header { min-height: 24px; }
+      h1 { font-size: 1rem; }
+      .tag { font-size: .7rem; }
+      .display { padding: 0; }
+      #question-text { font-size: clamp(1.15rem, 4vh, 2rem); }
+      #question-text.placeholder { font-size: clamp(3rem, 18vh, 8rem); }
+      #question-number { margin-bottom: 5px; font-size: .85rem; }
+      .controls { padding: 8px 12px; gap: 4px; border-radius: 14px; }
+      button { min-height: 40px; padding: 7px 14px; font-size: .95rem; }
+      .main-generate { min-height: 46px; width: min(75vw, 300px); font-size: 1.05rem; }
+      .status { margin: 4px 0; font-size: .72rem; }
+      .progress { margin-bottom: 5px; font-size: .72rem; }
+      .tools { margin-top: 3px; }
+      .secondary { min-height: 29px; padding: 4px 10px; font-size: .72rem; }
+    }
+    @media (min-width: 1000px) { .controls { max-width: 1050px; align-self: center; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>RANDOM QUESTION GENERATOR</h1>
+      <div class="tag"><span id="total-count">201</span> Questions · No Repetition</div>
+    </header>
+
+    <section class="display" aria-live="polite" aria-atomic="true">
+      <div class="display-content">
+        <div id="question-number"></div>
+        <div id="question-text" class="placeholder">READY?</div>
+        <div class="status" id="status">Press GENERATE to begin.</div>
+        <div class="progress" id="progress">Questions remaining: 201</div>
+        <button class="main-generate" id="generate" type="button">GENERATE</button>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Question controls">
+      <div id="error" role="alert"></div>
+      <div class="tools">
+        <button class="secondary" id="reset" type="button">↻ Reset / Shuffle</button>
+        <button class="secondary" id="fullscreen" type="button">⛶ Full screen</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    'use strict';
+
+    // The complete question bank. Original question numbers are retained.
+    const questions = [
+      "What is exchange?",
+      "How does exchange satisfy people's needs and wants?",
+      "How does exchange encourage specialisation?",
+      "How does exchange create income opportunities?",
+      "How does exchange support trade?",
+      "What is the barter system?",
+      "What is double coincidence of wants?",
+      "What is one disadvantage of the barter system?",
+      "Why is measuring value difficult in the barter system?",
+      "Why is divisibility a problem in the barter system?",
+      "Why is saving wealth difficult in the barter system?",
+      "What is money?",
+      "What is the currency of the Maldives?",
+      "What does MVR stand for?",
+      "What is general acceptability as a characteristic of money?",
+      "What is durability as a characteristic of money?",
+      "What is portability as a characteristic of money?",
+      "What is divisibility as a characteristic of money?",
+      "What is homogeneity as a characteristic of money?",
+      "Why should the supply of money be limited?",
+      "What is the medium of exchange function of money?",
+      "How does money act as a store of value?",
+      "What is the unit of account function of money?",
+      "How does money act as a standard of deferred payment?",
+      "What is commodity money?",
+      "Give one example of commodity money.",
+      "What are coins?",
+      "What is laari?",
+      "What are banknotes?",
+      "Who issues banknotes?",
+      "What is digital money?",
+      "Give two examples of digital money.",
+      "What are the five stages in the development of money?",
+      "What is a commercial bank?",
+      "What is an Islamic bank?",
+      "What is a central bank?",
+      "What is an investment bank?",
+      "What is a savings bank?",
+      "What are the main banking services?",
+      "How do banks help customers keep their money safe?",
+      "What is the main function of a commercial bank?",
+      "What type of financial services does an Islamic bank provide?",
+      "What is the main role of a central bank?",
+      "What does an investment bank help companies do?",
+      "What does a savings bank encourage?",
+      "What do commercial banks charge on loans?",
+      "What type of financing do commercial banks provide?",
+      "Why do Islamic banks not charge interest?",
+      "What financing methods do Islamic banks use?",
+      "What is Riba?",
+      "What type of trade does Islamic banking promote?",
+      "What type of economic activities does Islamic banking support?",
+      "What are the three main activities of investment banks?",
+      "What is a merger?",
+      "What is an acquisition?",
+      "How do savings banks provide secure storage for money?",
+      "What do savings banks offer on savings?",
+      "What is a stock exchange?",
+      "What is an example of a stock exchange in the Maldives?",
+      "What does MSE stand for?",
+      "What is a share?",
+      "Who is a shareholder?",
+      "Name three Maldivian public limited companies that can sell shares to the public.",
+      "How can companies use a stock exchange to raise capital?",
+      "How can a stock exchange help companies expand?",
+      "How can a stock exchange increase public ownership?",
+      "How can a stock exchange improve business growth opportunities?",
+      "How can investors earn dividends from shares?",
+      "How can investors benefit from increases in share value?",
+      "What does owning shares allow investors to own in a company?",
+      "What can happen to share prices?",
+      "How can investors lose money when buying shares?",
+      "What type of businesses does Islam encourage people to invest in?",
+      "Which three activities does Islam discourage in business transactions?",
+      "What is population?",
+      "What is a census?",
+      "What types of information are collected during a census?",
+      "What is household population?",
+      "Which three factors influence population growth?",
+      "What is the birth rate?",
+      "What is the death rate?",
+      "What is net migration?",
+      "Name five factors that affect birth rates.",
+      "How can early marriage affect the birth rate?",
+      "How can living standards affect birth rates?",
+      "How can customs and beliefs affect birth rates?",
+      "How can education affect birth rates?",
+      "How can female employment affect birth rates?",
+      "How can government policies affect birth rates?",
+      "Name four factors that can lower death rates.",
+      "How can advanced medical care lower death rates?",
+      "How can better food and housing lower death rates?",
+      "How can good sanitation and clean water lower death rates?",
+      "How can vaccination lower death rates?",
+      "Name three factors that can increase death rates.",
+      "How can natural disasters increase death rates?",
+      "How can famines and wars increase death rates?",
+      "How can a large elderly population affect death rates?",
+      "What is migration?",
+      "What are five reasons why people migrate?",
+      "How can better job opportunities encourage migration?",
+      "How can better education encourage migration?",
+      "How can improved working conditions encourage migration?",
+      "How can better healthcare encourage migration?",
+      "How can improved living standards encourage migration?",
+      "What are six reasons why people leave a place?",
+      "How can unemployment encourage people to leave a place?",
+      "How can low wages encourage people to leave a place?",
+      "How can poor services encourage people to leave a place?",
+      "How can disasters cause people to leave a place?",
+      "How can conflict cause people to leave a place?",
+      "How can climate change effects cause people to leave a place?",
+      "What are six reasons why people migrate to another place?",
+      "How can a better environment attract migrants?",
+      "What does the natural rate of increase measure?",
+      "What does the actual rate of increase include?",
+      "What is age distribution?",
+      "Which age group is considered the working age group?",
+      "What ages are included in the working age group?",
+      "What is the working population?",
+      "Who is included in the working population?",
+      "What are dependents?",
+      "Which two age groups are considered dependents?",
+      "What is the dependency ratio?",
+      "What does the dependency ratio compare?",
+      "How does a larger dependent group affect workers?",
+      "How can a larger dependent group affect government spending?",
+      "How can a larger dependent group affect investment?",
+      "How does a smaller dependent group affect the burden on workers?",
+      "What possible disadvantage can result from a smaller dependent group?",
+      "What are three factors that can increase the working age group?",
+      "How can large groups of young people reaching working age increase the working age group?",
+      "How can workers migrating into a country increase the working age group?",
+      "How can an increase in retirement age affect the working age group?",
+      "What are three factors that can decrease the working age group?",
+      "How can low birth rates in previous years decrease the working age group?",
+      "How can workers migrating abroad decrease the working age group?",
+      "How can a decrease in retirement age affect the working age group?",
+      "What are four effects of a larger working age group?",
+      "How can a larger working age group increase economic output and tax revenue?",
+      "How can a larger working age group improve living standards?",
+      "How can a larger working age group affect the dependency ratio?",
+      "Why does a larger working age group require more employment opportunities?",
+      "What are three effects of a smaller working age group?",
+      "How can a smaller working age group affect economic output and tax revenue?",
+      "How can a smaller working age group affect the dependency ratio?",
+      "What problem can a smaller working age group create for businesses?",
+      "What is an ageing population?",
+      "What happens to birth and death rates when a population ages?",
+      "How does longer life expectancy contribute to an ageing population?",
+      "What are four consequences of an ageing population?",
+      "How does an ageing population affect medical and social security spending?",
+      "Why does an ageing population create greater demand for specialised services?",
+      "How does an ageing population affect the number of workers available to support elderly people?",
+      "Why may some older people struggle with new technology?",
+      "What is the productive age group responsible for producing?",
+      "How does the productive age group contribute to government revenue?",
+      "Which public services are funded by taxes paid by the productive age group?",
+      "Which groups of people are supported by the productive age group?",
+      "How does a large, skilled and employed productive group affect economic growth?",
+      "How does a large, skilled and employed productive group affect living standards?",
+      "What happens to economic output when the productive group shrinks or becomes unemployed?",
+      "How does a shrinking or unemployed productive group affect tax income?",
+      "What is a population pyramid?",
+      "What type of graph is used to represent population in a population pyramid?",
+      "Which two groups are shown in a population pyramid?",
+      "How are age groups arranged in a population pyramid?",
+      "Where is the youngest age group shown in a population pyramid?",
+      "On which sides of a population pyramid are males and females shown?",
+      "What does a wide base and narrow top in a population pyramid indicate?",
+      "Which countries are commonly associated with population pyramids that have a wide base and narrow top?",
+      "What does a narrow base and wider middle and top in a population pyramid indicate?",
+      "Which countries are commonly associated with population pyramids that have a narrow base and wider middle and top?",
+      "What do nearly straight sides in a population pyramid indicate?",
+      "What is geographical distribution?",
+      "Across which types of places does geographical distribution describe how people are spread?",
+      "What are five factors that influence geographical distribution?",
+      "How do employment opportunities influence geographical distribution?",
+      "How do schools influence geographical distribution?",
+      "How do hospitals influence geographical distribution?",
+      "How does transport influence geographical distribution?",
+      "How does the availability of land influence geographical distribution?",
+      "What is population density?",
+      "What unit of area is usually used to measure population density?",
+      "What is a developed country?",
+      "What are four characteristics of developed countries?",
+      "Name four examples of developed countries.",
+      "How do developed countries compare in income and GDP per person?",
+      "What are the living standards and poverty levels in developed countries?",
+      "How do technology and infrastructure compare in developed countries?",
+      "How do healthcare, education and housing compare in developed countries?",
+      "What are the literacy levels and life expectancy like in developed countries?",
+      "What are the birth and death rates like in developed countries?",
+      "What are the population growth patterns of developed countries?",
+      "What is a developing country?",
+      "Why are developing countries seeking economic development through industrialisation?",
+      "Name seven examples of developing countries.",
+      "What are the income and GDP per person levels in developing countries?",
+      "What are the poverty levels and living standards like in developing countries?",
+      "How do the number of factories and industrial growth compare in developing countries?",
+      "Which two industries employ many people in developing countries?"
+];
+
+    const questionText = document.getElementById('question-text');
+    const questionNumber = document.getElementById('question-number');
+    const statusMessage = document.getElementById('status');
+    const progress = document.getElementById('progress');
+    const error = document.getElementById('error');
+    const generateButton = document.getElementById('generate');
+
+    let shuffledQuestions = [];
+    let currentIndex = 0;
+
+    // Fisher-Yates shuffle creates a random order without duplicates.
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function resetQuestions() {
+      shuffledQuestions = shuffle(questions.map((text, index) => ({
+        text,
+        originalNumber: index + 1
+      })));
+      currentIndex = 0;
+      questionText.textContent = 'READY?';
+      questionText.className = 'placeholder';
+      questionNumber.textContent = '';
+      statusMessage.textContent = `${questions.length} questions are ready. Press GENERATE to begin.`;
+      progress.textContent = `Questions remaining: ${questions.length}`;
+      error.textContent = '';
+      generateButton.disabled = false;
+      generateButton.textContent = 'GENERATE';
+    }
+
+    function showCompleted() {
+      questionText.textContent = 'ALL QUESTIONS COMPLETED!';
+      questionText.className = 'completed';
+      questionNumber.textContent = '';
+      statusMessage.textContent = 'All questions have been displayed. No questions were repeated.';
+      progress.textContent = `Completed: ${questions.length} / ${questions.length}`;
+      generateButton.disabled = true;
+      generateButton.textContent = 'FINISHED';
+    }
+
+    function generateQuestion() {
+      if (currentIndex >= shuffledQuestions.length) {
+        showCompleted();
+        return;
+      }
+
+      const question = shuffledQuestions[currentIndex];
+      questionNumber.textContent = `QUESTION ${question.originalNumber}`;
+      questionText.textContent = question.text;
+      questionText.className = '';
+      currentIndex++;
+
+      const remaining = questions.length - currentIndex;
+      progress.textContent = `Displayed: ${currentIndex} / ${questions.length}  |  Remaining: ${remaining}`;
+      statusMessage.textContent = remaining === 0
+        ? 'You have reached the final question!'
+        : 'Read the question and give your answer.';
+
+      if (remaining === 0) {
+        generateButton.disabled = true;
+        generateButton.textContent = 'FINISHED';
+      }
+    }
+
+    generateButton.addEventListener('click', generateQuestion);
+    document.getElementById('reset').addEventListener('click', resetQuestions);
+
+    document.getElementById('fullscreen').addEventListener('click', async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch (err) {
+        statusMessage.textContent = 'Full screen is not available in this browser.';
+      }
+    });
+
+    // Spacebar generates the next question when focus is not on a button/input.
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' && event.target === document.body && !generateButton.disabled) {
+        event.preventDefault();
+        generateQuestion();
+      }
+    });
+
+    // Keep the displayed total synchronized with the actual question bank.
+    document.getElementById('total-count').textContent = questions.length;
+    resetQuestions();
+  </script>
+</body>
+</html>
