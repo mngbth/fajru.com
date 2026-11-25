@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071923">
+<title>Random Number Generator</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #071923;
+    --panel: #102b38;
+    --panel2: #153746;
+    --accent: #58e0b1;
+    --text: #f4fbff;
+    --muted: #a9c2cc;
+    --danger: #ff9a9a;
+  }
+  * { box-sizing: border-box; }
+  html, body { width: 100%; min-height: 100%; margin: 0; }
+  body {
+    min-height: 100svh;
+    background: radial-gradient(ellipse at 50% 0%, #174454 0%, var(--bg) 65%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: grid;
+    place-items: center;
+    padding: clamp(12px, 2.5vw, 32px);
+  }
+  .app {
+    width: min(100%, 1500px);
+    min-height: min(92svh, 900px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(18px, 3vh, 32px);
+  }
+  header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  h1 { margin: 0; font-size: clamp(1.05rem, 2.3vw, 1.8rem); letter-spacing: .04em; font-weight: 700; }
+  .tag { color: var(--muted); font-size: clamp(.72rem, 1.2vw, .95rem); }
+  .display {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 10px 0;
+  }
+  #number {
+    width: 100%;
+    font-size: clamp(5rem, min(35vw, 55vh),  min(42vw, 34rem));
+    font-weight: 850;
+    line-height: .95;
+    letter-spacing: -.055em;
+    overflow-wrap: anywhere;
+    color: var(--accent);
+    text-shadow: 0 8px 45px #58e0b133;
+    font-variant-numeric: tabular-nums;
+  }
+  #number.placeholder { color: #d8e8ed; font-size: clamp(3.5rem, 15vw, 13rem); }
+  .status { min-height: 1.5em; margin-top: 18px; margin-bottom: 22px; color: var(--muted); font-size: clamp(.85rem, 1.5vw, 1.1rem); }
+  .main-generate { min-width: clamp(190px, 28vw, 340px); min-height: clamp(58px, 8vh, 82px); font-size: clamp(1.15rem, 2.2vw, 1.7rem); }
+  .controls {
+    background: #0d2632dd;
+    border: 1px solid #ffffff1a;
+    border-radius: 24px;
+    padding: clamp(14px, 2vw, 26px);
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: clamp(10px, 1.5vw, 20px);
+    align-items: end;
+    box-shadow: 0 18px 55px #0003;
+  }
+  label { display: block; color: var(--muted); font-size: clamp(.8rem, 1.2vw, 1rem); margin: 0 0 8px 3px; }
+  input {
+    width: 100%; min-width: 0;
+    border: 1px solid #ffffff25;
+    border-radius: 13px;
+    background: var(--panel2);
+    color: var(--text);
+    padding: 14px 15px;
+    font: inherit;
+    font-size: clamp(1rem, 1.7vw, 1.35rem);
+    outline: none;
+  }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #58e0b122; }
+  button {
+    border: 0; border-radius: 14px;
+    min-height: 54px;
+    padding: 13px 25px;
+    background: var(--accent);
+    color: #06251d;
+    font: inherit;
+    font-weight: 800;
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform .12s ease, filter .12s ease;
+  }
+  button:hover { filter: brightness(1.06); }
+  button:active { transform: scale(.98); }
+  .tools { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
+  .secondary {
+    min-height: 40px; padding: 8px 14px; border-radius: 10px;
+    background: #ffffff14; color: var(--text); font-size: .9rem; font-weight: 600;
+    border: 1px solid #ffffff20;
+  }
+  #error { grid-column: 1 / -1; color: var(--danger); min-height: 1.2em; font-size: .9rem; }
+  @media (max-width: 600px) and (orientation: portrait) {
+    .app { min-height: 94svh; gap: 12px; }
+    header { align-items: flex-start; }
+    .controls { grid-template-columns: 1fr 1fr; border-radius: 18px; }
+    .main-generate { width: min(100%, 340px); }
+    #number { font-size: clamp(5rem, 29vw, 12rem); }
+    #number.placeholder { font-size: clamp(3rem, 14vw, 6rem); }
+    .display { min-height: 35svh; }
+  }
+  @media (max-width: 700px) and (orientation: landscape) {
+    body { padding: 8px 16px; }
+    .app { min-height: 96svh; gap: 8px; }
+    header { min-height: 24px; }
+    h1 { font-size: 1rem; }
+    .tag { font-size: .7rem; }
+    .display { padding: 0; }
+    #number { font-size: clamp(4rem, 34vh, 16rem); }
+    #number.placeholder { font-size: clamp(3rem, 18vh, 8rem); }
+    .controls { grid-template-columns: 1fr 1fr auto; padding: 9px 12px; gap: 9px; border-radius: 14px; }
+    label { margin-bottom: 4px; font-size: .75rem; }
+    input { padding: 9px 10px; font-size: 1rem; }
+    button { min-height: 42px; padding: 8px 14px; font-size: .95rem; }
+    .main-generate { min-height: 48px; width: min(75vw, 300px); font-size: 1.05rem; }
+    .status { margin-bottom: 8px; }
+    .tools { margin-top: 4px; }
+    .secondary { min-height: 30px; padding: 4px 10px; font-size: .75rem; }
+    .status { margin-top: 5px; font-size: .75rem; }
+  }
+  @media (min-width: 1000px) {
+    .controls { max-width: 1050px; width: 100%; align-self: center; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <h1>RANDOM NUMBER GENERATOR</h1>
+    <div class="tag">Choose a range · Generate a number</div>
+  </header>
+
+  <section class="display" aria-live="polite" aria-atomic="true">
+    <div>
+      <div id="number" class="placeholder">READY?</div>
+      <div class="status" id="status">Enter your minimum and maximum numbers.</div>
+      <button class="generate main-generate" id="generate">GENERATE</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="controls">
+      <div>
+        <label for="minimum">Minimum number</label>
+        <input id="minimum" type="number" step="1" value="1" inputmode="numeric">
+      </div>
+      <div>
+        <label for="maximum">Maximum number</label>
+        <input id="maximum" type="number" step="1" value="100" inputmode="numeric">
+      </div>
+      <div id="error" role="alert"></div>
+    </div>
+    <div class="tools">
+      <button class="secondary" id="fullscreen" type="button">⛶ Full screen</button>
+    </div>
+  </section>
+</main>
+<script>
+  const minInput = document.getElementById('minimum');
+  const maxInput = document.getElementById('maximum');
+  const numberDisplay = document.getElementById('number');
+  const status = document.getElementById('status');
+  const error = document.getElementById('error');
+
+  function generateNumber() {
+    const min = Number(minInput.value);
+    const max = Number(maxInput.value);
+    if (minInput.value.trim() === '' || maxInput.value.trim() === '' ||
+        !Number.isSafeInteger(min) || !Number.isSafeInteger(max)) {
+      error.textContent = 'Please enter whole numbers within the safe integer range.';
+      return;
+    }
+    if (min > max) {
+      error.textContent = 'Minimum must be less than or equal to maximum.';
+      return;
+    }
+    error.textContent = '';
+    const result = min + Math.floor(Math.random() * (max - min + 1));
+    numberDisplay.textContent = result.toLocaleString();
+    numberDisplay.classList.remove('placeholder');
+    status.textContent = `Random number between ${min.toLocaleString()} and ${max.toLocaleString()}`;
+  }
+
+  document.getElementById('generate').addEventListener('click', generateNumber);
+  [minInput, maxInput].forEach(input => input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') generateNumber();
+  }));
+  document.getElementById('fullscreen').addEventListener('click', async () => {
+    try {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    } catch (_) {
+      status.textContent = 'Full screen is not available in this browser.';
+    }
+  });
+</script>
+</body>
+</html>
